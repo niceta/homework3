@@ -10,7 +10,12 @@ object AddressObject {
     if (xs.nonEmpty && xs.head.toString == "") throw EmptyNameException(xs)
     xs match {
       case List(str: String, h: Int, ap: Int, _*) => Address(str, h, Some(ap))
-      case List(str: String, h: Int, ap: Option[Int], _*) => Address(str, h, ap)
+      case List(str: String, h: Int, ap: Option[_], _*) =>
+        ap match {
+          case None => Address(str, h, None)
+          case Some(c: Int) => Address(str, h, Some(c))
+          case _ => throw new Exception(s"Apartment number is not Int in list: $xs")
+        }
       case List(str: String, h: Int, _*) => Address(str, h, None)
       case _ => throw ConstructAddressException(xs)
     }
